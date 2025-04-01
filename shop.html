@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Shop with Payment Options</title>
+    <style>
+        /* Modern CSS Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f3f4f6;
+        }
+
+        /* Header Styles */
+        .navbar {
+            background: #1e3a8a;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+        }
+
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Main Content Styles */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #1e3a8a;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .quantity-controls button {
+            padding: 5px 10px;
+            margin: 0 5px;
+            background-color: #1e3a8a;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .quantity-controls button:hover {
+            background-color: #1c3a7a;
+        }
+
+        .total {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: right;
+            color: #1e3a8a;
+        }
+
+        .payment-options {
+            margin-top: 20px;
+        }
+
+        .payment-options label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+        .payment-options input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        .payment-options input[type="number"]:focus {
+            outline: none;
+            border-color: #1e3a8a;
+            box-shadow: 0 0 5px rgba(30, 58, 138, 0.5);
+        }
+
+        .payment-options button {
+            width: 100%;
+            padding: 10px;
+            background-color: #1e3a8a;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .payment-options button:hover {
+            background-color: #1c3a7a;
+        }
+
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .success {
+            color: #28a745;
+            font-weight: bold;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        /* Search and Category Styles */
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-container input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        .search-container select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .nav-links a {
+                width: 100%;
+                text-align: center;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .search-container input,
+            .search-container select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar">
+        <div class="logo" onclick="redirectToDashboard()">MIMDINARE</div>
+        <div class="nav-links">
+            <a href="./stock.html">STOCK</a>
+            <a href="./history.html">HISTORY</a>
+            <a href="./shop.html" class="active">SHOP</a>
+            <a href="./config.html">CONFIG</a>
+        </div>
+        <div class="user-info">
+            <span id="username-display"></span>
+            <button onclick="logout()" class="logout-btn">→</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Search and Category Filter -->
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search items..." oninput="filterItems()">
+            <select id="categoryFilter" onchange="filterItems()">
+                <option value="all">All Categories</option>
+                <option value="sasmeli">Sasmeli</option>
+                <option value="snack">Snack</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <!-- Shop Page -->
+        <div class="shop">
+            <h2>Shop Page</h2>
+            <ul id="shopList"></ul>
+            <div class="total">Total: ₾<span id="totalAmount">0.00</span></div>
+        </div>
+
+        <!-- Payment Options -->
+        <div class="payment">
+            <h2>Payment Options</h2>
+            <div class="payment-options">
+                <label>
+                    Cash: <input type="number" id="cashAmount" placeholder="Enter cash amount" min="0" oninput="updateCardAmount()">
+                </label>
+                <label>
+                    Card: <input type="number" id="cardAmount" placeholder="Enter card amount" min="0" oninput="updateCashAmount()">
+                </label>
+                <button onclick="processPayment()">Process Payment</button>
+            </div>
+            <div id="paymentResult" class="success"></div>
+            <div id="errorMessage" class="error"></div>
+        </div>
+    </div>
+
+    <script>
+        // Sample Stock Data with Categories
+        const stock = [
+            { name: "Cappy", price: 3.10, category: "sasmeli" },
+            { name: "Fuse tea", price: 2.60, category: "sasmeli" },
+            { name: "ბოთლის კოკა-კოლა", price: 3.00, category: "sasmeli" },
+            { name: "ფანტა", price: 3.00, category: "sasmeli" },
+            { name: "ქილის კოკა-კოლა", price: 2.50, category: "sasmeli" },
+            { name: "ყავა", price: 3.00, category: "sasmeli" },
+            { name: "ჩაი", price: 3.00, category: "sasmeli" },
+            { name: "წყალი", price: 1.50, category: "sasmeli" },
+            { name: "ასორტი", price: 10.00, category: "snack" },
+            { name: "დორიტოსი", price: 3.50, category: "snack" },
+            { name: "პოპკორნი", price: 2.50, category: "snack" },
+            { name: "ფრიქსი", price: 3.00, category: "snack" },
+            { name: "ჩიტოსი", price: 3.00, category: "snack" },
+            { name: "ხრუსტიმი დიდი", price: 3.00, category: "snack" },
+            { name: "ხრუსტიმი პატარა", price: 2.00, category: "snack" },
+            { name: "Vape IZY", price: 15.00, category: "other" },
+            { name: "Vape VOOM", price: 17.00, category: "other" },
+            { name: "სნუსი DOPE", price: 23.00, category: "other" }
+        ];
+
+        // Cart to Track Selected Items
+        let cart = {};
+
+        // Initialize Shop Page
+        function initializeShop() {
+            renderShopItems(stock);
+        }
+
+        // Render Shop Items
+        function renderShopItems(items) {
+            const shopList = document.getElementById('shopList');
+            shopList.innerHTML = ""; // Clear existing items
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${item.name} - ₾${item.price.toFixed(2)}</span>
+                    <div class="quantity-controls">
+                        <button onclick="updateCart('${item.name}', -1)">-</button>
+                        <span id="quantity-${item.name}">${cart[item.name] || 0}</span>
+                        <button onclick="updateCart('${item.name}', 1)">+</button>
+                    </div>
+                `;
+                shopList.appendChild(li);
+            });
+        }
+
+        // Filter Items Based on Search and Category
+        function filterItems() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+
+            const filteredItems = stock.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchQuery);
+                const matchesCategory = category === "all" || item.category === category;
+                return matchesSearch && matchesCategory;
+            });
+
+            renderShopItems(filteredItems);
+        }
+
+        // Update Cart and Calculate Total
+        function updateCart(itemName, change) {
+            if (!cart[itemName]) {
+                cart[itemName] = 0;
+            }
+            cart[itemName] += change;
+
+            if (cart[itemName] < 0) {
+                cart[itemName] = 0; // Prevent negative quantities
+            }
+
+            // Update Quantity Display
+            document.getElementById(`quantity-${itemName}`).textContent = cart[itemName];
+
+            // Calculate Total
+            calculateTotal();
+        }
+
+        // Calculate Total Amount
+        function calculateTotal() {
+            let total = 0;
+            stock.forEach(item => {
+                if (cart[item.name]) {
+                    total += item.price * cart[item.name];
+                }
+            });
+            document.getElementById('totalAmount').textContent = total.toFixed(2);
+
+            // Update Payment Fields
+            updateCardAmount();
+        }
+
+        // Update Card Amount Based on Cash Input
+        function updateCardAmount() {
+            const total = parseFloat(document.getElementById('totalAmount').textContent);
+            const cashAmount = parseFloat(document.getElementById('cashAmount').value) || 0;
+            const cardAmount = total - cashAmount;
+
+            document.getElementById('cardAmount').value = cardAmount.toFixed(2);
+        }
+
+        // Update Cash Amount Based on Card Input
+        function updateCashAmount() {
+            const total = parseFloat(document.getElementById('totalAmount').textContent);
+            const cardAmount = parseFloat(document.getElementById('cardAmount').value) || 0;
+            const cashAmount = total - cardAmount;
+
+            document.getElementById('cashAmount').value = cashAmount.toFixed(2);
+        }
+
+        // Process Payment
+        function processPayment() {
+    const total = parseFloat(document.getElementById('totalAmount').textContent);
+    const cashAmount = parseFloat(document.getElementById('cashAmount').value) || 0;
+    const cardAmount = parseFloat(document.getElementById('cardAmount').value) || 0;
+
+    // Validate Inputs
+    if (isNaN(cashAmount)) {
+        showError("Please enter a valid cash amount.");
+        return;
+    }
+    if (isNaN(cardAmount)) {
+        showError("Please enter a valid card amount.");
+        return;
+    }
+
+    // Check if the sum matches the total
+    const sum = cashAmount + cardAmount;
+    if (sum !== total) {
+        showError(`The sum of cash and card amounts (₾${sum.toFixed(2)}) does not match the total (₾${total.toFixed(2)}).`);
+        return;
+    }
+
+    // Prepare data for API request
+    const paymentData = {
+        cash: cashAmount,
+        card: cardAmount
+    };
+
+    // Send POST request to the API
+    fetch('http://mimdinare.runasp.net/api/Cashreg', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(paymentData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Save the total to localStorage for the dashboard
+        const dashboardTotal = parseFloat(localStorage.getItem('dashboardTotal')) || 0;
+        localStorage.setItem('dashboardTotal', dashboardTotal + total);
+
+        // Update Cash and Card Balances
+        const cashBalance = parseFloat(localStorage.getItem('cashBalance')) || 0;
+        const cardBalance = parseFloat(localStorage.getItem('cardBalance')) || 0;
+        localStorage.setItem('cashBalance', cashBalance + cashAmount);
+        localStorage.setItem('cardBalance', cardBalance + cardAmount);
+
+        // Log the purchase in history
+        logPurchase(stock, total);
+
+        // Clear Error and Display Success
+        clearError();
+        document.getElementById('paymentResult').textContent = `Payment Successful! Cash: ₾${cashAmount.toFixed(2)}, Card: ₾${cardAmount.toFixed(2)}`;
+        
+        // Clear the cart after successful payment
+        cart = {};
+        calculateTotal();
+        renderShopItems(stock);
+    })
+    .catch(error => {
+        showError(`Payment failed: ${error.message}`);
+        console.error('Error:', error);
+    });
+}
+
+        // Show Error Message
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        // Clear Error Message
+        function clearError() {
+            document.getElementById('errorMessage').textContent = "";
+        }
+
+        // Redirect to Dashboard
+        function redirectToDashboard() {
+            window.location.href = 'dashboard.html';
+        }
+
+        const username = localStorage.getItem('username');
+        document.getElementById('username-display').textContent = username;
+
+        // Logout Function
+        function logout() {
+            alert("Logout functionality can be added here.");
+        }
+
+        // Initialize the Shop on Page Load
+        window.onload = initializeShop;
+
+        // Function to log a purchase in history
+function logPurchase(items, total) {
+    const historyData = JSON.parse(localStorage.getItem('historyData')) || [];
+    historyData.push({
+        timestamp: new Date().toISOString(),
+        type: 'Shop Purchase',
+        price: total,
+        items: items.filter(item => cart[item.name] > 0).map(item => ({
+            name: item.name,
+            quantity: cart[item.name]
+        }))
+    });
+    localStorage.setItem('historyData', JSON.stringify(historyData));
+}
+    </script>
+</body>
+</html>
